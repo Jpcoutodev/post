@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String?
+  createdAt DateTime   @default(now())
+  carousels Carousel[]
+}
+
+model Carousel {
+  id          String   @id @default(cuid())
+  userId      String?
+  title       String
+  theme       String?
+  prompt      String
+  status      String   @default("draft")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  slides      Slide[]
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Slide {
+  id         String   @id @default(cuid())
+  carouselId String
+  index      Int
+  kind       String
+  prompt     String?
+  imageUrl   String?
+  status     String   @default("pending")
+  n8nRunId   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  carousel   Carousel @relation(fields: [carouselId], references: [id], onDelete: Cascade)
+
+  @@unique([carouselId, index])
+  @@index([carouselId])
+}
