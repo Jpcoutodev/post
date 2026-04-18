@@ -1,14 +1,25 @@
-import NewCarouselForm from "@/components/NewCarouselForm";
+import NewContentForm from "@/components/NewContentForm";
 
-export default function NewCarouselPage() {
+export default async function NewContentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const platform = typeof params.platform === "string" ? params.platform : "instagram";
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="text-2xl font-semibold">Novo carrossel</h1>
-      <p className="mt-1 text-sm text-neutral-600">
-        Preencha o tema e o prompt. A primeira imagem será gerada pelo fluxo do n8n.
-      </p>
-      <div className="mt-6 rounded-xl border border-neutral-200 bg-white p-6">
-        <NewCarouselForm />
+    <div className="mx-auto max-w-2xl fade-in">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-white">
+          Novo Conteúdo
+        </h1>
+        <p className="mt-1.5 text-sm text-white/40">
+          Preencha os campos abaixo. A primeira imagem será gerada automaticamente.
+        </p>
+      </div>
+      <div className="glass rounded-2xl p-6">
+        <NewContentForm defaultPlatform={platform} />
       </div>
     </div>
   );

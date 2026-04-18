@@ -7,6 +7,7 @@ export default function NewCarouselForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,8 +35,47 @@ export default function NewCarouselForm() {
     }
 
     const { carousel } = await res.json();
+    const imageUrl = carousel?.slides?.[0]?.imageUrl;
+
+    if (imageUrl) {
+      setGeneratedImage(imageUrl);
+      setLoading(false);
+      return;
+    }
+
+    // Fallback caso não retorne imagem logo de cara (ex: webhook assíncrono)
     router.push(`/carousel/${carousel.id}`);
     router.refresh();
+  }
+
+  if (generatedImage) {
+    return (
+      <div className="flex flex-col items-center space-y-6 py-6 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-neutral-900">Imagem gerada com sucesso!</h2>
+          <p className="mt-1 text-sm text-neutral-500">O fluxo do n8n retornou a imagem abaixo.</p>
+        </div>
+        <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-2xl border border-neutral-200 shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={generatedImage} alt="Imagem gerada" className="h-full w-full object-cover transition-transform hover:scale-105 duration-700" />
+        </div>
+        <button 
+          onClick={() => {
+            setGeneratedImage(null);
+            const form = document.querySelector('form');
+            if(form) form.reset();
+          }}
+          className="rounded-full bg-neutral-100 px-6 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-200 hover:text-neutral-900"
+        >
+          Criar outra imagem
+        </button>
+      </div>
+    );
   }
 
   return (

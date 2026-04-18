@@ -4,12 +4,21 @@ export default {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+      },
       colors: {
         brand: {
-          50: "#fdf2f8",
-          500: "#ec4899",
-          600: "#db2777",
-          700: "#be185d",
+          50: "#f0f0ff",
+          100: "#e0e1ff",
+          200: "#c7c8fe",
+          300: "#a5a7fc",
+          400: "#8183f8",
+          500: "#6366f1",
+          600: "#4f46e5",
+          700: "#4338ca",
+          800: "#3730a3",
+          900: "#312e81",
         },
       },
     },
